@@ -1,4 +1,4 @@
-package gyak;
+package hackerrank;
 
 import java.util.*;
 import java.util.Scanner;
