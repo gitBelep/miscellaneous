@@ -1,2 +1,4 @@
 # miscellaneous
-practicing, Java experiments and Hackerrank Challenges
+* Hackerrank Challenges
+* practicing
+* Java experiments
