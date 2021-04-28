@@ -23,12 +23,13 @@ public class Stack {
 
         List<String> ls = new ArrayList<>();
         List<Object> lo = new ArrayList<>();
-      //  ls = lo; //Object lista helyére nem tehetek leszármazottnak listáját sem. Fordítva sem megy.
+      //  ls = lo;
+      //  lo = ls;//Object lista helyére nem tehetek leszármazottnak listáját sem. Fordítva sem megy.
         lo.add(ls); //az megy, az más.
 
         Collection<String> cs = ls;  //ez OK (ha ugyanolyan típusokat fogad), mert a Collection a List őse.
+        Collection<Object> cr = lo;
       //  Collection<Object> co = ls;  //sem megy.
-
 
     }
 

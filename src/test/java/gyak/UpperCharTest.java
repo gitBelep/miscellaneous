@@ -1,4 +1,4 @@
-package practice;
+package gyak;
 
 import org.junit.jupiter.api.Test;
 
