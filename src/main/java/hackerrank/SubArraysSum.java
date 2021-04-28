@@ -1,4 +1,4 @@
-package gyak;
+package hackerrank;
 import java.util.Scanner;
 
 public class SubArraysSum {
