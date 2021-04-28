@@ -1,4 +1,4 @@
-package gyak;
+package hackerrank;
 
 import java.text.NumberFormat;
 import java.util.Locale;
