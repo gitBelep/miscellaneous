@@ -1,4 +1,4 @@
-package practice.week14d02;
+package gyak.week14d02;
 
 import java.util.List;
 

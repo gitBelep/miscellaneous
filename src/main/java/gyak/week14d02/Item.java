@@ -1,4 +1,4 @@
-package practice.week14d02;
+package gyak.week14d02;
 
 public class Item {
     private final String product;
