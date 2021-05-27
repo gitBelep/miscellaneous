@@ -1,46 +1,52 @@
 package hackerrank;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.util.*;
 
+@FunctionalInterface //függvény interfész
 interface PerformOperation {
     boolean check(int a);
 }
 
 class MyMath {
+    //call one of MyMath's methods
     public static boolean checker(PerformOperation p, int num) {
         return p.check(num);
     }
-public PerformOperation isOdd(){
+
+    public PerformOperation a(){
         return new PerformOperation() {
             @Override
             public boolean check(int a) {
-                return a % 2 == 0;
-            }
-        };
-}
-    public PerformOperation isPrime(){
-        return new PerformOperation() {
-            @Override
-            public boolean check(int a) {
-                return new BigInteger(String.valueOf(a)).isProbablePrime(16);
+                return false;
             }
         };
     }
 
-    public PerformOperation isPalindrome(){
-        return new PerformOperation() {
-            @Override
-            public boolean check(int a) {
-                char[] ach = Integer.toString(a).toCharArray();
-                for(int i = 0; i < ach.length/2; i++){
-                    if(ach[i] != ach[ach.length-i]){
-                        return false;
-                    }
+    public PerformOperation isOdd() {
+        return a -> a % 2 == 0;
+    }
+
+    public PerformOperation isPrime() {
+        return a -> {
+            for (int i = 2; i <= a / 2; i++) {
+                if (a % i == 0) {
+                    return false;
                 }
-                return true;
             }
+            return true;
+        };
+    }
+
+    public PerformOperation isPalindrome() {
+        return a -> {
+            char[] ach = Integer.toString(a).toCharArray();
+            for (int i = 0; i < ach.length / 2; i++) {
+                if (ach[i] != ach[ach.length - i - 1]) {
+                    return false;
+                }
+            }
+            return true;
         };
     }
 }
@@ -76,4 +82,5 @@ public class LambdaExpr {
             System.out.println(ans);
         }
     }
+
 }
