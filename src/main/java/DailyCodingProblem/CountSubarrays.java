@@ -1,5 +1,6 @@
 package DailyCodingProblem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CountSubarrays {
@@ -17,6 +18,28 @@ public class CountSubarrays {
             }
         }
         return counter;
+    }
+
+    //return in a List, how many times I find a new min and a new max
+    public List<Integer> breakingRecords(List<Integer> scores) {
+        List<Integer> result = new ArrayList<>();
+        int min = scores.get(0);
+        int mincounter = 0;
+        int max = scores.get(0);
+        int maxcounter = 0;
+        for(int i : scores){
+            if(i < min){
+                min = i;
+                mincounter++;
+            }
+            if(i > max){
+                max = i;
+                maxcounter++;
+            }
+        }
+        result.add(maxcounter);
+        result.add(mincounter);
+        return result;
     }
 
 }
