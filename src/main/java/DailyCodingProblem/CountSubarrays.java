@@ -47,24 +47,34 @@ public class CountSubarrays {
 //    Given a list of integers, write a function that returns the largest sum of non-adjacent numbers. Numbers can be 0 or negative.
 //For example, [2, 4, 6, 8] should return 12, since we pick 4 and 8. [5, 1, 1, 5] should return 10, since we pick 5 and 5.
 //myList.size() > 2  !
-    public int nonAdjacentMax(List<Integer> myList){
-        if(myList.size() == 3){
-            return myList.get(0) * myList.get(2);
+    public int nonAdjacentMax(List<Integer> inList){
+        if(inList.size() == 3){
+            return inList.get(0) * inList.get(2);
         }
 
+        List<Integer> myList = new ArrayList<>( inList );
         Map<Integer, Integer> maxes = new HashMap<>();
         for(int i = 1; i <= 4; i++){
             int actualMax = Integer.MIN_VALUE;
             int maxPlace = -1;
-            for(int k = 0; k < myList.size(); k++){
-                if(k > actualMax){
-                    actualMax = k;
-
+            for(int k = 0; k < inList.size(); k++){
+                if(actualMax < myList.get(k)){
+                    actualMax = myList.get(k);
+                    maxPlace = k;
                 }
-
             }
-            
+            myList.set(maxPlace, Integer.MIN_VALUE);
+            maxes.put(i, maxPlace);
         }
+        System.out.println("maxes"+ maxes.toString());
+        if(Math.abs( maxes.get(1) - maxes.get(2) ) > 1){
+            return inList.get(maxes.get(1)) + inList.get(maxes.get(2));
+        } else if (Math.abs( maxes.get(1) - maxes.get(3) ) > 1){
+            return inList.get(maxes.get(1)) + inList.get(maxes.get(3));
+        }
+        int sum14 = inList.get(maxes.get(1)) + inList.get(maxes.get(4));
+        int sum23 = inList.get(maxes.get(2)) + inList.get(maxes.get(3));
+        return Math.max( sum14, sum23 );
     }
 
 }

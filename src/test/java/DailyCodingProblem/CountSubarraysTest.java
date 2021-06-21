@@ -28,4 +28,16 @@ class CountSubarraysTest {
         assertEquals(List.of(2,4), c.breakingRecords(myLis2));
     }
 
+    @Test
+    void testNonAdjacent(){
+        CountSubarrays c = new CountSubarrays();
+        assertEquals(19, c.nonAdjacentMax(List.of(0,10,11,9,1)));  //2+3 ~19
+        assertEquals(20, c.nonAdjacentMax(List.of(9,10,11,8,1)));  //1+3 ~20
+        assertEquals(27, c.nonAdjacentMax(List.of(8,10,19,9,1)));  //1+4 ~27
+        assertEquals(21, c.nonAdjacentMax(List.of(0,10,9,11,5,1)));  //2+1 ~21
+        assertEquals(4, c.nonAdjacentMax(List.of(-1,-10,-9,-11,5,0)));  //3+1 ~4
+        assertEquals(20, c.nonAdjacentMax(List.of(0,10,11,10,8)));  //2+3 ~20
+        assertEquals(16, c.nonAdjacentMax(List.of(8,9,8,-100,-9)));  //2+3 ~16
+    }
+
 }
