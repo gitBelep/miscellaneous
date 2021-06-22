@@ -76,7 +76,7 @@ public class OrderService {
                 .flatMap(o -> o.getProducts().stream())
                 .filter(p -> p.getName().equals(name))
                 .findFirst()
-                .orElseThrow( () -> new IllegalArgumentException("No such product"));
+                .orElseThrow( () -> new IllegalArgumentException("No such product."));
     }
 
     //      Adjuk vissza azt a rendelést, ami a legdrágább terméket tartalmazza! Ha több ilyen van, bármelyiket.
