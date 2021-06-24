@@ -1,0 +1,2 @@
+EZ  egy		(azaz: 1_db) 
+  próbafile!
