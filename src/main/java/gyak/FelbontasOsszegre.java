@@ -24,13 +24,13 @@ public class FelbontasOsszegre {
         int counter = 0;
 
         for (; a <= max; a++) {
-            counter += part3(number, a, b);
+            counter += hundreds3Parts(number, a, b);
         }
         System.out.println(counter);
         return counter;
     }
 
-    private int part3(int number, int a, int b) {
+    private int hundreds3Parts(int number, int a, int b) {
         int max = 0;
         if (b == 1) {
             max = number - a - b - 1;
@@ -38,15 +38,16 @@ public class FelbontasOsszegre {
         int counter = 0;
 
         for (; b <= max; b++) {
-            counter += part2(number, a, b);
+            counter += onesAndTens2Parts(number, a, b);
         }
         return counter;
     }
 
-    private int part2(int number, int a, int b) {
+    private int onesAndTens2Parts(int number, int a, int b) {
         int counter = 0;
-        for (int c = 1; c <= number - a - b - 1; c++) {
-            int d = number - a - b - c;
+        int max = number - a - b - 1;
+        for (int c = 1; c <= max; c++) {
+            int d = max - c + 1;
             counter++;
             System.out.println(a + "+" + b + "+" + c + "+" + d);
         }
