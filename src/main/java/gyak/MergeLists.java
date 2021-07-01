@@ -1,7 +1,11 @@
 package gyak;
 //Given two lists of integers a and b sorted in ascending order, merge them into one large sorted list.
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MergeLists {
     List<Integer> merged;
@@ -40,6 +44,13 @@ public class MergeLists {
         for (; x < z.size(); x++) {
             merged.add(z.get(x));
         }
+    }
+
+    public List<Integer> mergeListsWithStream(List<Integer> a, List<Integer> b) {
+        Stream<Integer> both = Stream.concat(a.stream(), b.stream());
+        return both
+                .sorted()
+                .collect(Collectors.toList());
     }
 
 }
