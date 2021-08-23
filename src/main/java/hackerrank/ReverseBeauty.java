@@ -2,8 +2,9 @@ package hackerrank;
 
 public class ReverseBeauty {
     public static void main(String[] args) {
-        System.out.println( ReverseBeauty.beautifulDays(20,23,6) + " = 2 ?");
-        System.out.println( ReverseBeauty.viralAdvertising(25));
+        System.out.println( beautifulDays(20,30,6) + " numbers are beautiful between 20 & 30");
+
+        System.out.println("\n" + "25 generations: "+ viralAdvertising(25));
     }
 
     public static int beautifulDays(int i, int j, int k) {
@@ -11,7 +12,7 @@ public class ReverseBeauty {
         for(int c = i; c <= j; c++){
             int rev = reverseNum(c);
             if( (c - rev) % k == 0 ){
-                System.out.println(c +" "+ rev+" "+(c - rev) % k);
+                System.out.println(c +" - "+ rev+" is beautiful, divideable by: " + k);
                 counter++;
             }
         }
@@ -24,6 +25,7 @@ public class ReverseBeauty {
         return Integer.parseInt(s.toString());
     }
 
+
     public static int viralAdvertising(int n) {
         int counter = 0;
         int p = 5;
@@ -32,7 +34,7 @@ public class ReverseBeauty {
             senders = p/2;
             counter += senders;
             p = senders * 3;
-            System.out.print(counter +" ");
+            System.out.print(counter +"; ");
         }
         return counter;
     }
