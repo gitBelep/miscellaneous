@@ -20,8 +20,8 @@ public class Generics {
         String[] stringArray = {"Hello", "World"};
         myPrinter.printArray(intArray);
         myPrinter.printArray(stringArray);
-        int count = 0;
 
+        int count = 0;
         for (Method method : Printer.class.getDeclaredMethods()) {
             String name = method.getName();
             if (name.equals("printArray"))
