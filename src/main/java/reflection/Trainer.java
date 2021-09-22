@@ -54,4 +54,12 @@ public class Trainer extends Human{
         this.skills = skills;
     }
 
+    class InnerSkills{
+        String innerSkill = "clever";
+
+        public void setInnerSkill(String innerSkill) {
+            this.innerSkill = innerSkill;
+        }
+    }
+
 }
