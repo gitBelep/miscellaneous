@@ -20,6 +20,9 @@ public class Trainer extends Human{
         this.birth = birth;
     }
 
+    public Trainer(List<String> skills) {
+        this.skills = skills;
+    }
 
     public String getName() {
         return name;

@@ -1,30 +1,24 @@
 package reflection;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
+import java.util.Arrays;
 
 public class ReflectionMain {
     private static Trainer trainer;
 
     public static void main(String[] args) {
         trainer = new Trainer("Elgár", 1848);
+        Trainer.InnerSkills iSkill = new Trainer().new InnerSkills();
         ReflectionMain main = new ReflectionMain();
 
 //        new ReflectionMain().writeMethodsOfTrainer();
 
-//        main.writeClassDatas();
+//        main.writeClassDatas(iSkill);
 
-        System.out.println( Human.class.getPackage().getName() +" = package of Human \n");
+//        main.aboutModifiers(iSkill);
 
-        System.out.println("Trainer.InnerSkills.getDeclaringClass() :");
-        Trainer.InnerSkills iSkill = new Trainer().new InnerSkills();
-        System.out.println( iSkill.getClass().getDeclaringClass() );
+        main.writeContsructors();
 
-        main.aboutModifiers(iSkill);
-
-        Class iSkillClass = iSkill.getClass();
-        System.out.println(iSkillClass.isLocalClass() +" = Trainer.InnerSkill.class.isLocalClass()");
-        System.out.println(Trainer.InnerSkills.class.isMemberClass() +" = Trainer.InnerSkills.class.isMemberClass()");
     }
 
 
@@ -43,7 +37,16 @@ public class ReflectionMain {
         System.out.println();
     }
 
-    private void writeClassDatas(){
+    private void writeClassDatas(Trainer.InnerSkills iSkill){
+        System.out.println( Human.class.getPackage().getName() +" = package of Human \n");
+
+        System.out.println("Trainer.InnerSkills.getDeclaringClass() :");
+        System.out.println( iSkill.getClass().getDeclaringClass() );
+
+        Class iSkillClass = iSkill.getClass();
+        System.out.println(iSkillClass.isLocalClass() +" = Trainer.InnerSkill.class.isLocalClass()");
+        System.out.println(Trainer.InnerSkills.class.isMemberClass() +" = Trainer.InnerSkills.class.isMemberClass()");
+
         System.out.println( trainer.getClass().getName() +" = Trainer classname \n");
         System.out.println( Course.class.getCanonicalName() +" = Course Canonical classname \n");
 
@@ -66,6 +69,18 @@ public class ReflectionMain {
         int iSkillModifier = iSkill.getClass().getModifiers();
         System.out.println( iSkillModifier +": "+ Modifier.toString(iSkillModifier) +" ~ myText: nothing ~");
         System.out.println( Modifier.isProtected(iSkillModifier) +" = protected \n");
+    }
+
+    private void writeContsructors(){
+        Constructor[] constructors = Trainer.class.getConstructors();
+
+        for(int j = 0; j < constructors.length; j++){
+            Class[] paramTypes = constructors[j].getParameterTypes();
+            Type[] types = constructors[j].getGenericParameterTypes();
+            System.out.println(j +": \n"+
+                    Arrays.toString(paramTypes) +"\n"+
+                    Arrays.toString(types));
+        }
     }
 
 }
