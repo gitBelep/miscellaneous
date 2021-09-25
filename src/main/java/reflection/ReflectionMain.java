@@ -12,15 +12,34 @@ public class ReflectionMain {
         ReflectionMain main = new ReflectionMain();
 
 //        new ReflectionMain().writeMethodsOfTrainer();
-
 //        main.writeClassDatas(iSkill);
-
 //        main.aboutModifiers(iSkill);
+//        main.writeContsructors();
 
-        main.writeContsructors();
-
+        main.aboutPackages();
     }
 
+
+    private void aboutPackages() {
+        System.out.println( Human.class.getPackage().getName() +" = package of Human \n");
+
+        Package[] packages = Package.getPackages();
+        for (Package p : packages) {
+            System.out.println(p.toString());
+        }
+    }
+
+    private void writeContsructors(){
+        Constructor[] constructors = Trainer.class.getConstructors();
+
+        for(int j = 0; j < constructors.length; j++){
+            Class[] paramTypes = constructors[j].getParameterTypes();
+            Type[] types = constructors[j].getGenericParameterTypes();
+            System.out.println(j +": \n"+
+                    Arrays.toString(paramTypes) +"\n"+
+                    Arrays.toString(types));
+        }
+    }
 
     private void writeMethodsOfTrainer(){
         System.out.println("Public and inherited methods (from Human & Object) :");
@@ -38,8 +57,6 @@ public class ReflectionMain {
     }
 
     private void writeClassDatas(Trainer.InnerSkills iSkill){
-        System.out.println( Human.class.getPackage().getName() +" = package of Human \n");
-
         System.out.println("Trainer.InnerSkills.getDeclaringClass() :");
         System.out.println( iSkill.getClass().getDeclaringClass() );
 
@@ -69,18 +86,6 @@ public class ReflectionMain {
         int iSkillModifier = iSkill.getClass().getModifiers();
         System.out.println( iSkillModifier +": "+ Modifier.toString(iSkillModifier) +" ~ myText: nothing ~");
         System.out.println( Modifier.isProtected(iSkillModifier) +" = protected \n");
-    }
-
-    private void writeContsructors(){
-        Constructor[] constructors = Trainer.class.getConstructors();
-
-        for(int j = 0; j < constructors.length; j++){
-            Class[] paramTypes = constructors[j].getParameterTypes();
-            Type[] types = constructors[j].getGenericParameterTypes();
-            System.out.println(j +": \n"+
-                    Arrays.toString(paramTypes) +"\n"+
-                    Arrays.toString(types));
-        }
     }
 
 }
