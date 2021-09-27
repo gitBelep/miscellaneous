@@ -2,8 +2,9 @@ package reflection;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
-public class ReflectionMain {
+public class ReflectionMain<T> {
     private static Trainer trainer;
 
     public static void main(String[] args) {
@@ -14,21 +15,24 @@ public class ReflectionMain {
 //        new ReflectionMain().writeMethodsOfTrainer();
 //        main.writeClassDatas(iSkill);
 //        main.aboutModifiers(iSkill);
-//        main.writeContsructors();
-
-        main.aboutPackages();
+//        main.aboutPackages();
+        main.writeContsructors();
+        main.oneMoreConstructor(trainer, main);
     }
 
 
-    private void aboutPackages() {
-        System.out.println( Human.class.getPackage().getName() +" = package of Human \n");
+    private void oneMoreConstructor(Trainer trainer, ReflectionMain main){
+        try {
+            Constructor constr = trainer.getClass().getConstructor(String.class, int.class);
 
-        Package[] packages = Package.getPackages();
-        for (Package p : packages) {
-            System.out.println(p.toString());
+            System.out.println("getDeclaringClass of the constructor(Str, int): "+ constr.getDeclaringClass());
+            Class[] exes = constr.getExceptionTypes();
+            System.out.println("Length of the Array for getExceptionTypes of the constructor: "+ exes.length);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Cannot read Constructor", e);
         }
     }
-
+    
     private void writeContsructors(){
         Constructor[] constructors = Trainer.class.getConstructors();
 
@@ -36,8 +40,19 @@ public class ReflectionMain {
             Class[] paramTypes = constructors[j].getParameterTypes();
             Type[] types = constructors[j].getGenericParameterTypes();
             System.out.println(j +": \n"+
+                    "Number of parameters: "+ constructors[j].getParameterCount() +"\n"+
+                    "Modifier: "+ constructors[j].getModifiers() +"\n"+
                     Arrays.toString(paramTypes) +"\n"+
-                    Arrays.toString(types));
+                    Arrays.toString(types) +"\n");
+        }
+    }
+
+    private void aboutPackages() {
+        System.out.println( Human.class.getPackage().getName() +" = package of Human \n");
+
+        Package[] packages = Package.getPackages();
+        for (Package p : packages) {
+            System.out.println(p.toString());
         }
     }
 
