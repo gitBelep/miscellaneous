@@ -2,7 +2,6 @@ package reflection;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 public class ReflectionMain<T> {
     private static Trainer trainer;
@@ -16,10 +15,35 @@ public class ReflectionMain<T> {
 //        main.writeClassDatas(iSkill);
 //        main.aboutModifiers(iSkill);
 //        main.aboutPackages();
-        main.writeContsructors();
-        main.oneMoreConstructor(trainer, main);
+//        main.writeContsructors();
+//        main.oneMoreConstructor(trainer, main);
+//        main.methodParameters();
+        main.aboutFields();
     }
 
+
+    private void aboutFields(){
+        Field[] fields = Trainer.class.getDeclaredFields();
+        for(Field f : fields){
+            System.out.println(f.getName() +" ~ Modifier: "+ f.getModifiers() +"; "+f.getGenericType());
+            }
+    }
+
+    private void methodParameters(){
+        try {
+            Trainer emmi = Trainer.class.getConstructor().newInstance();
+            Method ms = trainer.getClass().getMethod("setName", String.class);
+            ms.invoke(emmi, "Emmi");
+
+            Method mg = Trainer.class.getMethod("getName");
+            String names = ((String) mg.invoke(emmi)).concat(" & ").concat((String) mg.invoke(trainer));
+            System.out.println( names);
+
+            System.out.println("parameter of setName: "+ ms.getParameters()[0].getName());
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot read method", e);
+        }
+    }
 
     private void oneMoreConstructor(Trainer trainer, ReflectionMain main){
         try {
@@ -32,7 +56,7 @@ public class ReflectionMain<T> {
             throw new IllegalArgumentException("Cannot read Constructor", e);
         }
     }
-    
+
     private void writeContsructors(){
         Constructor[] constructors = Trainer.class.getConstructors();
 
