@@ -20,7 +20,7 @@ public class Sodoku {
 
     public static void main(String[] args) {
         Sodoku sodoku = new Sodoku();
-        for(int eger = 0; eger < 11; eger++){
+        for(int eger = 0; eger < 5; eger++){
             sodoku.buildSodokuBoard();
         }
     }
@@ -114,13 +114,13 @@ public class Sodoku {
         Set<Integer> set = new HashSet<>(rowList);
         set.addAll(columnList);
         set.addAll(square);
-        return set.containsAll(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9));
+        return set.containsAll(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9));
     }
 
     private boolean totallyImpossible() {
         Set<Integer> set = new HashSet<>(columnList);
         set.addAll(square);
-        return set.containsAll(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9));
+        return set.containsAll(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9));
     }
 
     private void fillRowLists(int rowNr, int colNr) {
