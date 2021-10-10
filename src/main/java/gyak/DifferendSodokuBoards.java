@@ -10,32 +10,26 @@ import java.util.*;
 
 public class DifferendSodokuBoards {
     private static Charset CHARSET_UTF_8 = StandardCharsets.UTF_8;
-    Map<String, Integer> statistics = new HashMap<>();
+    private List<String> statistics = new ArrayList<>();
+    private List<String> sameMusters = new ArrayList<>();
 
-    public static void main(String[] args) {
-        DifferendSodokuBoards sodoku = new DifferendSodokuBoards();
-        sodoku.countBoards(Path.of("d:", "Sodokus.txt"));
-    }
-
-    public void countBoards(Path path) {
-        List<List<Integer>> actualBoard;
-        while (!(actualBoard = readFromFile(path)).isEmpty()) {
-            gainStatisticsAboutLeftUpperNr(actualBoard);
-            gainStatisticsAboutLeftBottomNr(actualBoard);
-        }
-        System.out.println("End of file \n \n Statistics:");
-        printStatistics();
-    }
-
-    private List<List<Integer>> readFromFile(Path path) {
+    //Control
+    public void makeStatisticsAboutCornerElements(Path path) {
         try (BufferedReader br = Files.newBufferedReader(path, CHARSET_UTF_8)) {
-            return readNextBoard(br);
+
+            List<List<Integer>> actualBoard;
+            while (!(actualBoard = readNextBoard(br)).isEmpty()) {
+                gainStatistics(actualBoard);
+                actualBoard = Collections.emptyList();
+            }
+            printStatistics();
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return Collections.emptyList();
         }
     }
 
+    //Read file
     private List<List<Integer>> readNextBoard(BufferedReader br) throws IOException {
         List<List<Integer>> board = new ArrayList<>(9);
         String line;
@@ -61,49 +55,121 @@ public class DifferendSodokuBoards {
         return oneRow;
     }
 
+    private void skipTheEmptyLine(BufferedReader br) throws IOException {
+        br.readLine();
+    }
+
+    //Statistic
+    private void gainStatistics(List<List<Integer>> actualBoard){
+        gainStatisticsAboutLeftUpperNr(actualBoard);
+        gainStatisticsAboutLeftBottomNr(actualBoard);
+        gainStatisticsAboutRightUpperNr(actualBoard);
+        gainStatisticsAboutRightBottomNr(actualBoard);
+    }
+
     private void gainStatisticsAboutLeftUpperNr(List<List<Integer>> board) {
         Integer u = board.get(0).get(0);
         StringBuilder collector = new StringBuilder(8);
-        for (int i = 1; i <= 8; i++) {
-            collector.append(board.get(i).indexOf(u));
+        for (int rowNr = 1; rowNr <= 8; rowNr++) {
+            collector.append(board.get(rowNr).indexOf(u));
         }
-        writeToStatistics(collector);
-        System.out.println("lUp: "+ collector);                      //@
+        writeToStatistics(collector.toString());
     }
 
     private void gainStatisticsAboutLeftBottomNr(List<List<Integer>> board) {
         Integer b = board.get(8).get(0);
         StringBuilder collector = new StringBuilder(8);
         for (int columnNr = 1; columnNr <= 8; columnNr++) {
-            for(int rowNr = 0; rowNr <= 8; rowNr++){
+            for(int rowNr = 0; rowNr <= 7; rowNr++){
                 if(board.get(rowNr).indexOf(b) == columnNr){
                     collector.append(8 - rowNr);
                     break;
                 }
             }
         }
-        writeToStatistics(collector);
-        System.out.println("lBo:"+ collector);                      //@
+        writeToStatistics(collector.toString());
     }
 
-    private void printStatistics() {
-    }
-
-    private void writeToStatistics(StringBuilder collector) {
-        String actualKey = collector.toString();
-        if (!statistics.containsKey(actualKey)) {
-            statistics.put(actualKey, 0);
+    private void gainStatisticsAboutRightUpperNr(List<List<Integer>> board) {
+        Integer ru = board.get(0).get(8);
+        StringBuilder collector = new StringBuilder(8);
+        for(int columnNr = 7; columnNr >= 0; columnNr--){
+            for (int rowNr = 1; rowNr <= 8; rowNr++) {
+                if(board.get(rowNr).get(columnNr) == ru){
+                    collector.append(rowNr);
+                    break;
+                }
+            }
         }
-        statistics.put(actualKey, statistics.get(actualKey) + 1);
+        writeToStatistics(collector.toString());
     }
 
-    private void skipTheEmptyLine(BufferedReader br) throws IOException {
-        br.readLine();
+    private void gainStatisticsAboutRightBottomNr(List<List<Integer>> board) {
+        Integer rb = board.get(8).get(8);
+        StringBuilder collector = new StringBuilder(8);
+        for(int rowNr = 7; rowNr >= 0; rowNr--){
+            for (int columnNr = 7; columnNr >= 0; columnNr--) {
+                if(board.get(rowNr).get(columnNr) == rb){
+                    collector.append(8 - columnNr);
+                    break;
+                }
+            }
+        }
+        writeToStatistics(collector.toString());
     }
+
+    private void writeToStatistics(String collector) {
+        for(int j = 0; j < statistics.size(); j++){
+            if(statistics.get(j).equals(collector)){
+                String firstOccurrence = statText(j);
+                String actualOccurrence = statText(statistics.size());
+                sameMusters.add("Same muster: "+ collector + firstOccurrence +" & "+ actualOccurrence +"\n");
+            }
+        }
+        statistics.add(collector);
+    }
+
+    private String statText(int index){
+        int indexOfBoard =  index / 4;
+        int indexOfCorner = index % 4;
+        String cornerName = "";
+        switch (indexOfCorner){
+            case 0:
+                cornerName = "left upper corner";
+                break;
+            case 1:
+                cornerName = "left bottom corner";
+                break;
+            case 2:
+                cornerName = "right upper corner";
+                break;
+            case 3:
+                cornerName = "right bottom corner";
+                break;
+        }
+        return " ~ in the "+ indexOfBoard +"th "+ cornerName;
+    }
+
+    //Output
+    private void printStatistics() {
+        System.out.println("Statistics: \n");
+    }
+
+    public List<String> getStatistics() {
+        return statistics;
+    }
+
+    public List<String> getSameMusters() {
+        return sameMusters;
+    }
+
 }
-// Feladat: különböznek-e a Sodoku tábla kitöltések?
+// Feladat:
+// (+) előfordul-e a táblákban ugyanaz a mintázat a sarkokban? (Tábla elforgatásával)
 // Darabokban file olvasás. Táblánként.
 // Bal felső szám (0. row) hányadik indexen (column) fordul elő egyes sorokban?
-// Bal alsó átszámítása (u.az a megoldás, ha elforgatom a mátrixot):
-//  egyes columnokban a 8 mínusz hányadik rowban szerepel adott szám.
-
+// Bal alsó átszámítása: egyes columnokban a 8 mínusz hányadik rowban szerepel adott szám. ..
+// ----------------------------------------
+// (-) Are there two boards that are the same?
+// Minden tábláról, az első sor minden számáról, minden elforgatásban, tükrözésben statisztika.
+// 9 index * 9 nr * 4 rotation * 2 mirroring = 648 String / board
