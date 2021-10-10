@@ -122,8 +122,8 @@ public class DifferendSodokuBoards {
         for(int j = 0; j < statistics.size(); j++){
             if(statistics.get(j).equals(collector)){
                 String firstOccurrence = statText(j);
-                String actualOccurrence = statText(statistics.size());
-                sameMusters.add("Same muster: "+ collector + firstOccurrence +" & "+ actualOccurrence +"\n");
+                String actualOccurrence = statText(statistics.size()).substring(3);
+                sameMusters.add("\nSame muster: "+ collector + firstOccurrence +" & "+ actualOccurrence);
             }
         }
         statistics.add(collector);
@@ -135,13 +135,13 @@ public class DifferendSodokuBoards {
         String cornerName = "";
         switch (indexOfCorner){
             case 0:
-                cornerName = "left upper corner";
+                cornerName = "left  upper  corner";
                 break;
             case 1:
-                cornerName = "left bottom corner";
+                cornerName = "left  bottom corner";
                 break;
             case 2:
-                cornerName = "right upper corner";
+                cornerName = "right upper  corner";
                 break;
             case 3:
                 cornerName = "right bottom corner";
@@ -152,7 +152,20 @@ public class DifferendSodokuBoards {
 
     //Output
     private void printStatistics() {
-        System.out.println("Statistics: \n");
+        System.out.println("Statistics:");
+        for(int i = 1; i <= statistics.size(); i++){
+            System.out.print(statistics.get(i - 1) +", ");
+            if(i % 4 == 0){
+                System.out.print("  | ");
+            }
+            if(i % 8 == 0){
+                System.out.println();
+            }
+        }
+        System.out.println();
+        for(String s : sameMusters){
+            System.out.print(s);
+        }
     }
 
     public List<String> getStatistics() {
