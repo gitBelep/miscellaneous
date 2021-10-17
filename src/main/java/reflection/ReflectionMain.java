@@ -1,6 +1,7 @@
 package reflection;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,43 +20,74 @@ public class ReflectionMain<T> {
 //        main.writeContsructors();
 //        main.oneMoreConstructor(trainer, main);
 //        main.methodParameters();
-        main.aboutFields();
-        main.modifyingAPrivateAttribute(trainer, "java.util.List<reflection.Course>", "cours",
+//        main.aboutFields();
+
+//        main.modifyingAttributeOfTrainer(trainer, "java.util.List<reflection.Course>", "cours", List.of(new Course("Java"), new Course("Python")));
+//        main.modifyingAttributeOfTrainer(trainer, "java.lang.String", "ame", "Newman Paula");
+//        main.modifyingAttributeOfTrainer(trainer, "int", "birt", 2000);
+//        main.modifyingAttributeOfTrainer(trainer, "int", "birt", "false data causes IllegalArgumentException");
+
+        main.modifyingAPrivateAttribute(trainer, "java.util.ArrayList", "cours",
                 List.of(new Course("Java"), new Course("Python")));
         main.modifyingAPrivateAttribute(trainer, "java.lang.String", "ame", "Newman Paula");
-        main.modifyingAPrivateAttribute(trainer, "int", "birt", 2000);
-        main.modifyingAPrivateAttribute(trainer, "int", "birt", "false data causes IllegalArgumentException");
+        main.modifyingAPrivateAttribute(new Course("JS course"), "java.lang.String", "name", "New PHP course");
+//cannot be found an Integer, it is an int
+        main.modifyingAPrivateAttribute(trainer, "java.lang.Integer", "birt", 2000);
+//because of <T> generics(?) does not work the int:
+        main.modifyingAPrivateAttribute(trainer, "int", "birt", 1900);
+
     }
 
 
-    private void modifyingAPrivateAttribute(Trainer actualTrainer, String type, String part, Object newValue) {
+    private <T> void modifyingAPrivateAttribute(T actualT, String type, String part, Object newValue) {
+        Field[] fields = actualT.getClass().getDeclaredFields();
+        try {
+            Class aClass = Class.forName(type);
+            for (Field actualField : fields) {
+                if (actualField.getType().isAssignableFrom(aClass)
+                //if (actualField.getGenericType().getTypeName().equals(type)
+                        && actualField.getName().contains(part)) {
+                    actualField.setAccessible(true);
+                    System.out.println("\n* Old value: " + actualField.get(actualT)
+                            + "   * Attribute changed: " + actualField.getName());
+                    actualField.set(actualT, newValue);
+                }
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | ClassNotFoundException e) {
+            System.out.println("\n\"Now we are in the CATCH block\": "+ e);
+        } finally {
+            writeActualValuesOfAttributes(actualT, fields);
+        }
+    }
+
+    private <T> void writeActualValuesOfAttributes(T actualT, Field[] fields) {
+        System.out.println("* Actual values:");
+        for(Field f : fields){
+            f.setAccessible(true);
+            try {
+                System.out.println(f.getName() +": "+ f.get(actualT));
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("Catch: ", e);
+            }
+        }
+    }
+
+    private void modifyingAttributeOfTrainer(Trainer actualTrainer, String type, String part, Object newValue) {
         Field[] fields = Trainer.class.getDeclaredFields();
         try {
             for (Field actualField : fields) {
                 if (actualField.getGenericType().getTypeName().equals(type)
                         && actualField.getName().contains(part)) {
                     actualField.setAccessible(true);
-                    System.out.println("\n * Old value: " + actualField.get(actualTrainer)
-                            + " * Attribute changed: " + actualField.getName());
+                    System.out.println("\n* Old value: " + actualField.get(actualTrainer)
+                            + " * Attrinute changed: " + actualField.getName());
                     actualField.set(actualTrainer, newValue);
                 }
             }
-        } catch (IllegalAccessException | IllegalArgumentException e) {
-            System.out.println("\"Now we are in the CATCH block\": "+ e);
+        } catch (IllegalAccessException e) {
+            System.out.println("\n\"Now we are in the CATCH block\": "+ e);
         } finally {
             writeActualValuesOfAttributes(actualTrainer, fields);
-        }
-    }
-
-    private void writeActualValuesOfAttributes(Trainer actualTrainer, Field[] fields) {
-        System.out.println("\nActual values:");
-        for(Field f : fields){
-            f.setAccessible(true);
-            try {
-                System.out.println(f.getName() +": "+ f.get(actualTrainer));
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException("Catch: ", e);
-            }
         }
     }
 
