@@ -33,7 +33,7 @@ class DifferendSodokuBoardsTest {
     void runWithLotsOfBoards(){
         DifferendSodokuBoards sodoku = new DifferendSodokuBoards();
         sodoku.makeStatisticsAboutCornerElements(Path.of(
-                "c:", "training", "miscellaneous", "src","main","resources","Sodoku-lotsOfBoards.txt"));
+                "c:", "training", "miscellaneous", "src","main","resources","Sodoku-manyBoards.txt"));
     }
 
 }
