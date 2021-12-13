@@ -9,23 +9,15 @@ import java.util.Map;
 
 public class A05Thermal {
     private Map<A05Coordinate, Integer> coordinates = new HashMap<>();
-    private int counterOfNonValidCoo = 0;
-    int countCoordinates = 0;
 
-    public static void main(String[] args) {
-        var t = new A05Thermal();
-        t.readFile();
-    }
-
-    private void readFile(){
-        Path path = Path.of("c:", "training", "miscellaneous", "src", "main", "resources", "advent", "Thermal.txt");
-        Path pTest = Path.of("c:", "training", "miscellaneous", "src", "main", "resources", "advent", "Thermal-test.txt");
+    public Integer readFile(Path path){
         try(BufferedReader br = Files.newBufferedReader(path)) {
             readCoordinates(br);
-            countCoordinatesWithMoreThanOneOverlapping();
+            return countCoordinatesWithMoreThanOneOverlapping();
         } catch (IOException e) {
             System.out.println(" |==0O> o-:E ..< áá@ÁÁ! > /n" + e.getMessage());
         }
+        return null;
     }
 
     private void readCoordinates(BufferedReader br) throws IOException{
@@ -66,31 +58,20 @@ public class A05Thermal {
                 coordinates.put(c, coordinates.get(c) + 1);
             }
         }
-        else {
-            counterOfNonValidCoo++;
-        }
+//        else {
+//            counterOfNonValidCoo++;
+//        }
     }
 
-    private void countCoordinatesWithMoreThanOneOverlapping(){
+    private int countCoordinatesWithMoreThanOneOverlapping(){
         int counter = 0;
         for(Map.Entry<A05Coordinate,Integer> e : coordinates.entrySet()){
             if(e.getValue() >= 2){
                 counter++;
             }
         }
-
-        int c2 = 0;
-        int c3 = 0;
-        for(int u : coordinates.values()){
-            if(u ==2) c2++;
-            if(u == 3) c3++;
-        }
-        System.out.println("2es: "+ c2 +"; 3-as: "+ c3);
-        //System.out.println(coordinates.toString());
-        System.out.println("Counter of non valid lines: "+ counterOfNonValidCoo
-                +"\nMin 2 overlapping: "+ counter);
-        System.out.println("Size of coordinates: "+ coordinates.size());
-
+        System.out.println("Min 2 overlapping: "+ counter);
+        return counter;
     }
 
 }
@@ -164,4 +145,3 @@ public class A05Thermal {
 //Consider all of the lines. At how many points do at least two lines overlap?
 //____________
 //2es: 8075; 3-as: 529 //Counter of non valid lines: 171 //Size of coordinates: 98486
-//Min 2 overlapping: 8622
