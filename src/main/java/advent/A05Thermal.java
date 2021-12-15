@@ -10,9 +10,9 @@ import java.util.Map;
 public class A05Thermal {
     private Map<A05Coordinate, Integer> coordinates = new HashMap<>();
 
-    public Integer readFile(Path path){
+    public Integer readFile(Path path, char driver){
         try(BufferedReader br = Files.newBufferedReader(path)) {
-            readCoordinates(br);
+            readCoordinates(br, driver);
             return countCoordinatesWithMoreThanOneOverlapping();
         } catch (IOException e) {
             System.out.println(" |==0O> o-:E ..< áá@ÁÁ! > /n" + e.getMessage());
@@ -20,7 +20,7 @@ public class A05Thermal {
         return null;
     }
 
-    private void readCoordinates(BufferedReader br) throws IOException{
+    private void readCoordinates(BufferedReader br, char driver) throws IOException{
         String line;
         while((line = br.readLine()) != null){
             String[] coo = line.trim().split(" -> ");  //2 coordinate
@@ -29,11 +29,15 @@ public class A05Thermal {
             String[] coo2Str = coo[1].split(",");
             var coo2 = new A05Coordinate(Integer.parseInt(coo2Str[0]), Integer.parseInt(coo2Str[1]));
 
-            fillCoordinates(coo1, coo2);
+            if(driver == 'd') {
+                fillCoordinatesByAlso45DegreeDiagonalLines(coo1, coo2);
+            }else{
+                fillCoordinatesByHorizontalAndVerticalLines(coo1, coo2);
+            }
         }
     }
 
-    private void fillCoordinates(A05Coordinate coo1, A05Coordinate coo2){
+    private void fillCoordinatesByHorizontalAndVerticalLines(A05Coordinate coo1, A05Coordinate coo2){
         if(coo1.getX() == coo2.getX()){
             int x = coo1.getX();
             int yS = Math.min(coo1.getY(), coo2.getY());
@@ -58,9 +62,56 @@ public class A05Thermal {
                 coordinates.put(c, coordinates.get(c) + 1);
             }
         }
-//        else {
-//            counterOfNonValidCoo++;
-//        }
+    }
+
+    private void fillCoordinatesByAlso45DegreeDiagonalLines(A05Coordinate coo1, A05Coordinate coo2){
+        if(coo1.getX() == coo2.getX()){
+            int x = coo1.getX();
+            int yS = Math.min(coo1.getY(), coo2.getY());
+            int yL = Math.max(coo1.getY(), coo2.getY());
+            for(int i = yS; i <= yL; i++){
+                var c = new A05Coordinate(x, i);
+                if( !coordinates.containsKey(c) ){
+                    coordinates.put(c, 0);
+                }
+                coordinates.put(c, coordinates.get(c) + 1);
+            }
+        } else if(coo1.getY() == coo2.getY()) {
+            int y = coo1.getY();
+            int xS = Math.min(coo1.getX(), coo2.getX());
+            int xL = Math.max(coo1.getX(), coo2.getX());
+            for (int i = xS; i <= xL; i++) {
+                var c = new A05Coordinate(i, y);
+                if ( !coordinates.containsKey(c) ){
+                    coordinates.put(c, 0);
+                }
+                coordinates.put(c, coordinates.get(c) + 1);
+            }
+        } else if(coo1.getX() - coo2.getX() == coo1.getY() - coo2.getY()){
+            int xS = Math.min(coo1.getX(), coo2.getX());
+            int xL = Math.max(coo1.getX(), coo2.getX());
+            int y = Math.min(coo1.getY(), coo2.getY());
+            for (int x = xS; x <= xL; x++) {
+                var c = new A05Coordinate(x, y);
+                if ( !coordinates.containsKey(c) ){
+                    coordinates.put(c, 0);
+                }
+                coordinates.put(c, coordinates.get(c) + 1);
+                y++;
+            }
+        } else if(coo1.getX() - coo2.getX() == -1 * (coo1.getY() - coo2.getY()) ) {
+            int xS = Math.min(coo1.getX(), coo2.getX());
+            int xL = Math.max(coo1.getX(), coo2.getX());
+            int yActual = Math.max(coo1.getY(), coo2.getY());
+            for (int x = xS; x <= xL; x++) {
+                var c = new A05Coordinate(x, yActual);
+                if (!coordinates.containsKey(c)) {
+                    coordinates.put(c, 0);
+                }
+                coordinates.put(c, coordinates.get(c) + 1);
+                yActual--;
+            }
+        }
     }
 
     private int countCoordinatesWithMoreThanOneOverlapping(){
@@ -91,7 +142,8 @@ public class A05Thermal {
 //0,0 -> 8,8
 //5,5 -> 8,2
 //Each line of vents is given as a line segment in the format x1,y1 -> x2,y2 where x1,y1 are the coordinates of one end
-// the line segment and x2,y2 are the coordinates of the other end. These line segments include the points at both ends. In other words:
+// the line segment and x2,y2 are the coordinates of the other end. These line segments include the points at both ends.
+// In other words:
 //An entry like 1,1 -> 1,3 covers points 1,1, 1,2, and 1,3.
 //An entry like 9,7 -> 7,7 covers points 9,7, 8,7, and 7,7.
 //For now, only consider horizontal and vertical lines: lines where either x1 = x2 or y1 = y2.
