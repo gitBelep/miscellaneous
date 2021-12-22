@@ -5,26 +5,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 
 public class A11Octopus {
     private int[][] octopusses = new int[10][];
     private List<List<Integer>> flashes;
     private int flashCounter = 0;
 
-    public int go(Path path, String mode, int rounds) {
+    public int go(Path path, int rounds) {
         try (BufferedReader br = Files.newBufferedReader(path)) {
-            if ("all".equals(mode)) {
-
-            } else {
-                watchOctopuses(br);
-                flashing(rounds);
-            }
+            watchOctopuses(br);
+                return flashing(rounds);
         } catch (IOException e) {
             System.out.println(" |==0O> o-:E ..< áá@ÁÁ! > /n" + e.getMessage());
         }
-        return flashCounter;
+        return 0;
     }
 
     private void watchOctopuses(BufferedReader br) throws IOException {
@@ -42,17 +38,20 @@ public class A11Octopus {
         }
     }
 
-    private void flashing(int rounds) {
+    private int flashing(int rounds) {
         for (int r = 1; r <= rounds; r++) {
+            if(flashes != null && flashes.size() == 100){
+                return r - 1;               //returns when flashing all octopusses at the same time
+            }
             flashes = new ArrayList<>();
             increaseByOne();
             flashingAndIncreasingEnvironment();
-            //kiiratás:
-                for (int[] arr : octopusses) {
-                    System.out.println(r + ": " + Arrays.toString(arr));
-                }
-                System.out.println(" ");
+            // print out the matrix after any rounds:
+            //    for (int[] arr : octopusses) {
+            //        System.out.println(r + ": " + Arrays.toString(arr));
+            //    }   System.out.println(" ");
         }
+        return flashCounter;                //returns the flashes after 100 rounds
     }
 
     private void increaseByOne() {
@@ -108,7 +107,6 @@ public class A11Octopus {
             }
             octopusWithLoadingOver9 = reviseOctopusesLoading();
         }
-        flashes = null;
     }
 
     private boolean reviseOctopusesLoading() {
