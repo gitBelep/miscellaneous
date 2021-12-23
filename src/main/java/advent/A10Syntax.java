@@ -4,65 +4,104 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class A10Syntax {
     private int sum = 0;
+    private List<Long> completionScores = new ArrayList<>();
 
-    public int clearSyntax(Path path){
-        try(BufferedReader br = Files.newBufferedReader(path)) {
+    public long clearSyntax(Path path, boolean modeCompletion) {
+        try (BufferedReader br = Files.newBufferedReader(path)) {
             String line;
-            while((line = br.readLine()) != null){
-                String notOnlyDots = nyomoz(line);
-                char failure = findFirst(notOnlyDots);
-                sum += kiszamol(failure);
-                //System.out.println("failure: "+ failure + " ~ sum: "+ sum);
+            while ((line = br.readLine()) != null) {
+                String notOnlyCircles = searchPairs(line);
+                if (modeCompletion) {
+                    findCompletion(notOnlyCircles);
+                } else {
+                    char failure = findFirst(notOnlyCircles);
+                    sum += counting(failure);
+                    //System.out.println("failure: "+ failure + " ~ sum: "+ sum);
+                }
             }
         } catch (IOException e) {
             System.out.println(" |==0O> o-:E ..< áá@ÁÁ! > \n" + e.getMessage());
         }
-        return sum;
+
+        if (modeCompletion) {
+            return findMiddle();
+        } else {
+            return sum;
+        }
     }
 
-    private String nyomoz(String string){
+    private String searchPairs(String string) {  //vigyázat, a zárójelek és a pont os bírnak RegEx jelentéssel !
         //System.out.println(string);
-        for(int i = 0; i < (string.length() + 1) / 2; i++) {
+        for (int i = 0; i < (string.length() + 1) / 2; i++) {
             String s1 = "\\(" + "o".repeat(2 * i) + "\\)";
             String s2 = "\\[" + "o".repeat(2 * i) + "\\]";
             String s3 = "\\{" + "o".repeat(2 * i) + "\\}";
             String s4 = "\\<" + "o".repeat(2 * i) + "\\>";
 
-            string = string.replaceAll(s1, "o".repeat( (i+1) * 2));
-            string = string.replaceAll(s2, "o".repeat( (i+1) * 2));
-            string = string.replaceAll(s3, "o".repeat( (i+1) * 2));
-            string = string.replaceAll(s4, "o".repeat( (i+1) * 2));
+            string = string.replaceAll(s1, "o".repeat((i + 1) * 2));
+            string = string.replaceAll(s2, "o".repeat((i + 1) * 2));
+            string = string.replaceAll(s3, "o".repeat((i + 1) * 2));
+            string = string.replaceAll(s4, "o".repeat((i + 1) * 2));
             //System.out.println(string);
         }
         return string;
     }
 
-    private char findFirst(String string){
-        List<Character> stock = List.of('o', '(','[','{','<');
-        for(char c : string.toCharArray()){
-            if( !stock.contains(c) ){
+    private char findFirst(String string) {
+        List<Character> stock = List.of('o', '(', '[', '{', '<');
+        for (char c : string.toCharArray()) {
+            if (!stock.contains(c)) {
                 return c;
             }
         }
         return 'x';
     }
 
-    private int kiszamol(char failure){
+    private int counting(char failure) {
         return switch (failure) {
             case ')' -> 3;
             case ']' -> 57;
             case '}' -> 1197;
             case '>' -> 25137;
-//            case '(' -> 3;
-//            case '[' -> 57;
-//            case '{' -> 1197;
-//            case '<' -> 25137;
-            default  -> 0;
+            default -> 0;
         };
+    }
+
+    private void findCompletion(String string) {
+        if ('x' == findFirst(string)) {         //not corrupted line
+            System.out.println(string);
+            long localSum = 0;
+            StringBuilder sb = new StringBuilder(string);
+            string = sb.reverse().toString();
+            for (char c : string.toCharArray()) {
+                localSum = sumUpMissingStatements(localSum, c);
+            }
+            System.out.println("End: " + localSum);
+            completionScores.add(localSum);
+        }
+    }
+
+    private long sumUpMissingStatements(long localSum, char c) {
+        //System.out.println(c + " localSum: " + localSum);
+        switch (c) {
+            case '(' -> localSum = localSum * 5 + 1;
+            case '[' -> localSum = localSum * 5 + 2;
+            case '{' -> localSum = localSum * 5 + 3;
+            case '<' -> localSum = localSum * 5 + 4;
+            default -> {
+            }
+        }
+        return localSum;
+    }
+
+    private long findMiddle() {
+        completionScores.sort(null);
+        return completionScores.get(completionScores.size() / 2);
     }
 
 }

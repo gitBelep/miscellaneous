@@ -13,10 +13,15 @@ class A10SyntaxTest {
     void clearSyntax() {
         A10Syntax sy = new A10Syntax();
         Path path = Path.of("c:", "training", "miscellaneous", "src", "main", "resources", "advent", "10Syntax.txt");
-        assertEquals(288_291, sy.clearSyntax(path) );
-        //vigyázat, a zárójelek és a pont os bír regex jelentéssel !
+        assertEquals(288_291, sy.clearSyntax(path, false) );
     }
 
+    @Test
+    void middleCompletion() {
+        A10Syntax sy = new A10Syntax();
+        Path path = Path.of("c:", "training", "miscellaneous", "src", "main", "resources", "advent", "10Syntax.txt");
+        assertEquals(820_045_242L, sy.clearSyntax(path, true) );
+    }
 
 
 
