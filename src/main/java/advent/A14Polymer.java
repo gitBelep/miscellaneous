@@ -7,10 +7,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class A14Polymer {
-    //List<Character> polymer = new LinkedList<>();         //after 12 iterations slows down and dies
-    Map<List<Character>, Character> rules = new HashMap<>();
-    Map<List<Character>, Long> relations = new LinkedHashMap<>();
-    char lastChar;
+    private final Map<List<Character>, Character> rules = new HashMap<>();
+    private final Map<List<Character>, Long> relations = new LinkedHashMap<>();
+    private char lastChar;
 
     public Long go(Path path, int round) {
         try (BufferedReader br = Files.newBufferedReader(path)) {
@@ -28,17 +27,10 @@ public class A14Polymer {
 
     private void readPolymerRelationsAndRules(BufferedReader br) throws IOException {
         String line = br.readLine();
-        lastChar = line.charAt(line.length()-1);
-        char[] ground = line.toCharArray();              //ground polymer
-        List<Character> key;
-        for (int k = 1; k < ground.length; k++) {
-            key = List.of(ground[k - 1], ground[k]);
-            if (!relations.containsKey(key)) {
-                relations.put(key, 0L);
-            }
-            relations.put(key, relations.get(key) + 1);
-            //System.out.println(key +" key: "+ relations.get(key));//oK
-        }
+        lastChar = line.charAt(line.length() - 1);
+
+        readGroundPolymer(line);
+
         br.readLine();                              //empty line
 
         while ((line = br.readLine()) != null) {    //listing the rules
@@ -48,12 +40,24 @@ public class A14Polymer {
             char newNeighbour = part[2].toCharArray()[0];
             rules.put(List.of(neighbour1, neighbour2), newNeighbour);
                                                     //collect all kind of relations
-            if( !relations.containsKey(List.of(neighbour1,neighbour2))){
+            if (!relations.containsKey(List.of(neighbour1, neighbour2))) {
                 relations.put(List.of(neighbour1, neighbour2), 0L);
             }                                       //all kind of relations for inserting new ones
-            if( !relations.containsKey(List.of('X',neighbour1,neighbour2))){
-                relations.put(List.of('X',neighbour1, neighbour2), 0L);
+            if (!relations.containsKey(List.of('X', neighbour1, neighbour2))) {
+                relations.put(List.of('X', neighbour1, neighbour2), 0L);
             }
+        }
+    }
+
+    private void readGroundPolymer(String line) {
+        char[] ground = line.toCharArray();
+        List<Character> key;
+        for (int k = 1; k < ground.length; k++) {
+            key = List.of(ground[k - 1], ground[k]);
+            if (!relations.containsKey(key)) {
+                relations.put(key, 0L);
+            }
+            relations.put(key, relations.get(key) + 1);
         }
     }
 
@@ -63,8 +67,8 @@ public class A14Polymer {
         for (List<Character> cl : relations.keySet()) {                       //NN
             if (cl.size() == 2) {
                 char insertChar = rules.get(cl);                              //C
-                value1 = relations.get( List.of('X', cl.get(0), insertChar) ) + relations.get(cl);
-                value2 = relations.get( List.of('X', insertChar, cl.get(1)) ) + relations.get(cl);
+                value1 = relations.get(List.of('X', cl.get(0), insertChar)) + relations.get(cl);
+                value2 = relations.get(List.of('X', insertChar, cl.get(1))) + relations.get(cl);
                 relations.put(cl, 0L);                                        //NN=0
                 relations.put(List.of('X', cl.get(0), insertChar), value1);    //XNC =1
                 relations.put(List.of('X', insertChar, cl.get(1)), value2);    //XCN =1
@@ -72,7 +76,7 @@ public class A14Polymer {
         }
         for (List<Character> cl : relations.keySet()) {                       //NC = XNC
             if (cl.size() == 3) {
-                relations.put( List.of(cl.get(1), cl.get(2)), relations.get(cl)); //NC =1
+                relations.put(List.of(cl.get(1), cl.get(2)), relations.get(cl)); //NC =1
                 relations.put(cl, 0L);                                          //XNC =0
             }
         }
@@ -81,34 +85,37 @@ public class A14Polymer {
     private long substract() {
         Map<Character, Long> sum = new HashMap<>();                 //list of chars
         for (Map.Entry<List<Character>, Character> e : rules.entrySet()) {
-            if(!sum.containsKey(e.getValue())){
+            if (!sum.containsKey(e.getValue())) {
                 sum.put(e.getValue(), 0L);
             }
         }
         for (Map.Entry<List<Character>, Long> e : relations.entrySet()) {  //count chars except last
             char actualChar = e.getKey().get(0);
-            if(e.getKey().size() == 2 && actualChar != lastChar) {
+            if (e.getKey().size() == 2 && actualChar != lastChar) {
                 sum.put(actualChar, sum.get(actualChar) + e.getValue());
             }
         }
         for (Map.Entry<List<Character>, Long> e : relations.entrySet()) {  //count last char
             char actualChar = e.getKey().get(1);
-            if(e.getKey().size() == 2 && actualChar == lastChar) {
+            if (e.getKey().size() == 2 && actualChar == lastChar) {
                 sum.put(lastChar, sum.get(lastChar) + e.getValue());
             }
         }
         long max = Long.MIN_VALUE;
         long min = Long.MAX_VALUE;
-        for(char c : sum.keySet()){
-            if(sum.get(c) > max) max = sum.get(c);
-            if(sum.get(c) < min) min = sum.get(c);
+        for (char c : sum.keySet()) {
+            if (sum.get(c) > max) max = sum.get(c);
+            if (sum.get(c) < min) min = sum.get(c);
         }
-        System.out.println("max: "+ max +"; min: "+ min);
+        //System.out.println("max: " + max + "; min: " + min);
         return max - min;
     }
 
 }
-//    private void insertAtoms() {              //Did not work over 12 iteration..
+//Brute Force - Did not work over 12 iteration..
+// attribute:  private List<Character> polymer = new LinkedList<>();
+//
+//    private void insertAtoms() {
 //        List<Character> newpolymer = new LinkedList<>();
 //        for (int i = 1; i < polymer.size(); i++) {
 //            newpolymer.add(polymer.get(i - 1));
