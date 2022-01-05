@@ -49,6 +49,7 @@ public class A13paper {
                 folding(foldNr, A13Coordinate::getY, A13Coordinate::setY);
             }
         }
+        drawCryptography();
         return coordinates.size();
     }
 
@@ -62,6 +63,26 @@ public class A13paper {
             }
         }
         coordinates = new HashSet<>(coordinates);       //hier disappear repeating elements
+        //System.out.println(coordinates.toString() + "\n" + coordinates.size() +"\n");
+    }
+
+    private void drawCryptography(){
+        char[][] drawing = new char[6][39];
+        for(char[] c : drawing){
+            for(int i = 0; i < c.length; i++){
+                c[i] = '.';
+            }
+        }
+        int x;
+        int y;
+        for(A13Coordinate c : coordinates){
+            y = c.getX();
+            x = c.getY();
+            drawing[x][y] = '8';
+        }
+        for(char[] c : drawing){
+            System.out.println(Arrays.toString(c));
+        }
     }
 
 }
@@ -172,6 +193,8 @@ public class A13paper {
 //The first half of this puzzle is complete! It provides one gold star: *
 //
 //--- Part Two ---
-//Finish folding the transparent paper according to the instructions. The manual says the code is always eight capital letters.
-//
+//Finish folding the transparent paper according to the instructions.
+// The manual says the code is always eight capital letters.
+//  "Thanks" for crypto game
 //What code do you use to activate the infrared thermal imaging camera system?
+//ABKJFBGC
