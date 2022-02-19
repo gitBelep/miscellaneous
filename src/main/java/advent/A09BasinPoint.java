@@ -12,7 +12,7 @@ public class A09BasinPoint {
         this.r = r;
         this.c = c;
         this.value = value;
-        this.basinParts = 0;
+        this.basinParts = 1;  //itself
     }
 
     public int getR() {
@@ -29,7 +29,7 @@ public class A09BasinPoint {
 
     public void addBasinPart(){
         this.basinParts += 1;
-        System.out.println(this);
+        //System.out.println(this);
     }
 
     public int getBasinParts() {
